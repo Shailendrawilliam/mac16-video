@@ -67,6 +67,25 @@ MAC16_MODEL=./wan22-5b-q8 mac16 "the man looks into the camera and speaks, raise
   --image scene.jpg --width 480 --height 832 --num-frames 41 --steps 20
 ```
 
+### Turbo (4 steps) — recommended
+
+| 704x1280, 41 frames | base 5B, 20 steps | Turbo 5B, 4 steps |
+|---|---|---|
+| Denoising | 19.7 min | **68 s** |
+| VAE decode | 118 s | 91 s |
+| End-to-end | 21.7 min | **2.7 min** |
+| Peak footprint | 13.5 GB | 13.4 GB |
+
+Turbo is trained at 704x1280. At 480x832 it breaks faces and hands, so use it only at 720p.
+
+```bash
+mac16 --preset turbo720 --image scene.jpg "the man looks into the camera and speaks, raises his right hand"
+mac16 --preset base480  --image scene.jpg "..."   # fallback, ~8.5 min
+```
+
+Turbo weights: `Kijai/WanVideo_comfy` -> `Wan22-Turbo/Wan2_2-TI2V-5B-Turbo_fp16.safetensors`
+(same key layout as the official checkpoint; convert with `mlx_video.models.wan_2.convert --quantize --bits 8`).
+
 ## Roadmap
 
 - [x] Streaming T5 encoder + prompt cache
@@ -75,6 +94,7 @@ MAC16_MODEL=./wan22-5b-q8 mac16 "the man looks into the camera and speaks, raise
 - [x] `mac16` command with sensible defaults
 - [x] Wan2.2 TI2V-5B (text + image to video)
 - [ ] Layer streaming for 14B models
+- [x] 4-step Turbo image-to-video at 720p
 - [ ] Simple UI + job queue for overnight batches
 
 ## Credits

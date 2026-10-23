@@ -34,9 +34,36 @@ def _defaults():
     }
 
 
+PRESETS = {
+    # measured on M5 16 GB: 704x1280, 41f -> 2.7 min, 13.4 GB. Turbo breaks faces/hands at 480p.
+    "turbo720": {"--model-dir": os.environ.get("MAC16_TURBO_MODEL", "./wan22-5b-turbo-q8"),
+                 "--width": "704", "--height": "1280", "--num-frames": "41",
+                 "--steps": "4", "--guide-scale": "1"},
+    # base Wan2.2 5B: 480x832, 41f, 20 steps -> 8.5 min. Fallback when Turbo misbehaves.
+    "base480": {"--model-dir": os.environ.get("MAC16_I2V_MODEL", "./wan22-5b-q8"),
+                "--width": "480", "--height": "832", "--num-frames": "41", "--steps": "20"},
+}
+
+
+def _apply_preset(argv):
+    if "--preset" not in argv:
+        return argv
+    i = argv.index("--preset")
+    name = argv[i + 1] if i + 1 < len(argv) else ""
+    argv = argv[:i] + argv[i + 2:]
+    if name not in PRESETS:
+        raise SystemExit(f"unknown preset '{name}'. Use: {', '.join(PRESETS)}")
+    for k, v in PRESETS[name].items():
+        if k not in argv:
+            argv += [k, v]
+    print(f"[mac16] preset {name}")
+    return argv
+
+
 def _with_defaults(argv):
     if argv and not argv[0].startswith("-"):
         argv = ["--prompt", argv[0]] + argv[1:]
+    argv = _apply_preset(argv)
     for k, v in _defaults().items():
         if k not in argv:
             argv += [k, v]

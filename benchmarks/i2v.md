@@ -5,3 +5,5 @@
 | 2026-10-23 | 480x832 | 41 | 10 | aggressive tiling | 10 min | 14.0 GB |
 | 2026-10-23 | 480x832 | 41 | 10 | causal bf16 (v0.7b) | 3 min | 17.9 GB |
 | 2026-10-23 | 480x832 | 41 | 20 | causal bf16 strips (v0.7c), action prompt | 8 min | 17.8 GB |
+| 2026-10-23 | 704x1280 | 81 | 4 (turbo) | causal bf16 | 0 min | 0.4 GB |
+| 2026-10-23 | 704x1280 | 121 | 4 (turbo) | causal bf16 | 0 min | 0.4 GB |
