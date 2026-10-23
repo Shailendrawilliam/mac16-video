@@ -1,0 +1,28 @@
+[project]
+name = "mac16-video"
+version = "0.6.0"
+description = "AI video generation tuned for 16 GB Apple Silicon Macs"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+dependencies = [
+    "mlx",
+    "numpy",
+    "imageio",
+    "imageio-ffmpeg",
+    "mlx-video @ git+https://github.com/Blaizzy/mlx-video.git",
+]
+
+[project.optional-dependencies]
+convert = ["torch"]
+
+[project.scripts]
+mac16 = "mac16_video.cli:main"
+mac16-bench = "mac16_video.bench.vae_bench:cli"
+
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["mac16_video*"]

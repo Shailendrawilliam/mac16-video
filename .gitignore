@@ -6,3 +6,4 @@ Wan2.2-*/
 wan13b-*/
 *.mp4
 bench_out/
+*.egg-info/
