@@ -48,13 +48,32 @@ mac16-bench                       # default set
 mac16-bench causal causal+bf16    # specific decoders
 ```
 
+## Image-to-video (Wan2.2 TI2V-5B, 8-bit) — measured on M5 16 GB
+
+| | before (mlx-video) | mac16-video |
+|---|---|---|
+| Wan2.2 VAE decode peak (480x832, 41f) | 11.5 GB (causal fp32 path) / 8.3 GB tiled | **5.4 GB** |
+| Wan2.2 VAE decode time | 336 s (tiled) | **33 s** |
+| Transformer memory left during VAE | 5.4 GB | **0.07 GB** |
+| End-to-end 480x832, 41f, 10 steps | 10.4 min, 14.0 GB | **3.2 min, 13.2 GB** |
+| End-to-end 704x1280, 41f, 20 steps | - | 21.7 min, 13.5 GB |
+
+How: causal frame-by-frame Wan2.2 VAE decode, bf16-safe fused RMS norm, cache stored as
+copies (not views), transformer weights freed before the VAE, `mx.compile` off by default
+(no speed difference on M5, but it pinned the weights).
+
+```bash
+MAC16_MODEL=./wan22-5b-q8 mac16 "the man looks into the camera and speaks, raises his hand" \
+  --image scene.jpg --width 480 --height 832 --num-frames 41 --steps 20
+```
+
 ## Roadmap
 
 - [x] Streaming T5 encoder + prompt cache
 - [x] Per-stage memory profiling
 - [x] Causal low-memory VAE decode (bf16 default)
 - [x] `mac16` command with sensible defaults
-- [ ] Wan2.2 TI2V-5B (text + image to video)
+- [x] Wan2.2 TI2V-5B (text + image to video)
 - [ ] Layer streaming for 14B models
 - [ ] Simple UI + job queue for overnight batches
 

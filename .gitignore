@@ -7,3 +7,7 @@ wan13b-*/
 *.mp4
 bench_out/
 *.egg-info/
+wan22-*/
+turbo_src/
+*.safetensors
+*.pth

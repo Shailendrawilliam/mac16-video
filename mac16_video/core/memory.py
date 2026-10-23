@@ -11,3 +11,11 @@ def reset_peak():
 
 def peak_gb():
     return _f("get_peak_memory")() / 1e9
+
+
+def active_gb():
+    return _f("get_active_memory")() / 1e9
+
+
+def cache_gb():
+    return _f("get_cache_memory")() / 1e9
