@@ -61,9 +61,19 @@ def _apply_preset(argv):
 
 
 def _with_defaults(argv):
-    if argv and not argv[0].startswith("-"):
-        argv = ["--prompt", argv[0]] + argv[1:]
     argv = _apply_preset(argv)
+    if "--prompt" not in argv:
+        # find the first positional token (not a flag and not a flag's value)
+        bool_flags = {"--no-compile", "--no-negative-prompt", "--debug-latents"}
+        two_value = {"--lora", "--lora-high", "--lora-low"}
+        i = 0
+        while i < len(argv):
+            t = argv[i]
+            if t.startswith("--"):
+                i += 1 if t in bool_flags else 3 if t in two_value else 2
+                continue
+            argv = ["--prompt", t] + argv[:i] + argv[i + 1:]
+            break
     for k, v in _defaults().items():
         if k not in argv:
             argv += [k, v]
